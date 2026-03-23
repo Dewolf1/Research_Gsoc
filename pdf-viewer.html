@@ -3,45 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF Viewer</title>
+    <title>PDF Viewer - GSoC Proposals</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            text-align: center;
+        /* PAGE SPECIFIC STYLES */
+        .pdf-viewer-wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 140px;
+            padding-bottom: 100px;
+            position: relative;
+            z-index: 2;
         }
+
+        .page-title {
+            font-family: var(--font-head);
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            line-height: 1.1;
+        }
+
+        .pdf-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        .pdf-btn {
+            padding: 0.6rem 1.5rem;
+            border-radius: 100px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            font-family: var(--font-body);
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.03);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pdf-btn:hover {
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+        }
+
+        .pdf-btn.active {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
+            border-color: transparent;
+            color: #fff;
+            box-shadow: 0 0 15px rgba(168,85,247,0.3);
+        }
+
+        .pdf-container {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .pdf-container.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .glass-card.pdf-card {
+            padding: 0;
+            overflow: hidden;
+        }
+
         #pdf-frame {
             width: 100%;
             height: 80vh;
-            border: 1px solid #ccc;
-            margin-top: 20px;
+            border: none;
+            border-radius: var(--radius-sm);
         }
-        nav {
-            margin-bottom: 20px;
+
+        .pdf-info {
+            padding: 1.5rem;
+            background: rgba(255,255,255,0.02);
+            border-top: 1px solid var(--border);
+        }
+
+        .pdf-info-title {
+            font-family: var(--font-head);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .pdf-info-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
         }
     </style>
 </head>
 <body>
-    <nav>
-        <a href="index.html">Home</a>
-        <br><br>
-        <input type="file" id="fileInput" accept=".pdf" />
-        <button id="loadPdfBtn">Load PDF</button>
-    </nav>
-    <iframe id="pdf-frame" src="" frameborder="0"></iframe>
 
+    <!-- BACKGROUND EFFECTS -->
+    <div class="bg-grid"></div>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <canvas id="particles-canvas"></canvas>
+    <div class="noise"></div>
+
+    <!-- NAVBAR -->
+    <header id="navbar">
+        <nav class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">⬡</span>
+                <span class="logo-text">NeonHorizon</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="pdf-viewer.html" class="nav-link" style="color: var(--text-primary);">PDF Viewer</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- PDF VIEWER WRAPPER -->
+    <div class="pdf-viewer-wrap reveal">
+        <div class="section-label">Documentation</div>
+        <h1 class="page-title">PDF <br /><span class="gradient-text">Viewer</span></h1>
+        <p class="section-subtitle" style="margin-bottom: 2rem;">Select and view GSoC proposal documents.</p>
+
+        <!-- PDF SELECTOR BUTTONS -->
+        <div class="pdf-selector reveal reveal-delay-1">
+            <button class="pdf-btn active magnetic-btn" onclick="showPDF('proposal-v2', this)">
+                Proposal v2
+            </button>
+            <button class="pdf-btn magnetic-btn" onclick="showPDF('proposal-multilingual', this)">
+                Multilingual Proposal
+            </button>
+        </div>
+
+        <!-- PDF CONTAINER 1 -->
+        <div id="pdf-proposal-v2" class="pdf-container active">
+            <div class="glass-card pdf-card reveal">
+                <iframe id="pdf-frame" src="https://github.com/Dewolf1/Research_Gsoc/raw/main/GSoC_2026_Wagtail_MohdAdeeb_v2.pdf" frameborder="0"></iframe>
+                <div class="pdf-info">
+                    <div class="pdf-info-title">GSoC 2026 Wagtail Proposal v2</div>
+                    <div class="pdf-info-desc">The latest version of the GSoC proposal for Wagtail multilingual support. This document includes comprehensive technical specifications and implementation details.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PDF CONTAINER 2 -->
+        <div id="pdf-proposal-multilingual" class="pdf-container">
+            <div class="glass-card pdf-card reveal">
+                <iframe id="pdf-frame" src="https://github.com/Dewolf1/Research_Gsoc/raw/main/GSoC_2026_Wagtail_Multilingual_Proposal_MohdAdeeb.pdf" frameborder="0"></iframe>
+                <div class="pdf-info">
+                    <div class="pdf-info-title">GSoC 2026 Wagtail Multilingual Proposal</div>
+                    <div class="pdf-info-desc">Focused proposal document detailing the multilingual support implementation for Wagtail. Includes design considerations and timeline.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
     <script>
-        document.getElementById('loadPdfBtn').onclick = function() {
-            const fileInput = document.getElementById('fileInput');
-            const file = fileInput.files[0];
-            if (file) {
-                const url = URL.createObjectURL(file);
-                document.getElementById('pdf-frame').src = url;
-            } else {
-                alert("Please select a PDF file to view.");
-            }
-        };
+        function showPDF(id, btnElement) {
+            document.querySelectorAll('.pdf-container').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.pdf-btn').forEach(t => t.classList.remove('active'));
+            document.getElementById('pdf-' + id).classList.add('active');
+            btnElement.classList.add('active');
+        }
     </script>
 </body>
 </html>
