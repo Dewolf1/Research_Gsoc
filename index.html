@@ -12,7 +12,7 @@
   --accent: #f59e0b;
   --accent-light: #fffbeb;
   --bg: #f8fafc;
-  --card-bg: rgba(255, 255, 255, 0.8);
+  --card-bg: white;
   --glass-bg: rgba(255, 255, 255, 0.7);
   --glass-border: rgba(255, 255, 255, 0.5);
   --text-primary: #0f172a;
@@ -25,6 +25,36 @@
   --radius-sm: 0.375rem;
   --radius-md: 0.75rem;
   --radius-lg: 1rem;
+}
+
+body.dark {
+  --primary-light: rgba(79, 70, 229, 0.1);
+  --secondary-light: rgba(16, 185, 129, 0.1);
+  --accent-light: rgba(245, 158, 11, 0.1);
+  --bg: #020617;
+  --card-bg: #1e293b;
+  --glass-bg: rgba(15, 23, 42, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-tertiary: #64748b;
+  --border: #334155;
+}
+
+@media (prefers-color-scheme: dark) {
+  body:not(.light) {
+    --primary-light: rgba(79, 70, 229, 0.1);
+    --secondary-light: rgba(16, 185, 129, 0.1);
+    --accent-light: rgba(245, 158, 11, 0.1);
+    --bg: #020617;
+    --card-bg: #1e293b;
+    --glass-bg: rgba(15, 23, 42, 0.85);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-tertiary: #64748b;
+    --border: #334155;
+  }
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -491,9 +521,46 @@ body {
   .hero-title { font-size: 2.25rem; }
   .hero-sub { gap: 0.75rem; }
 }
+
+#theme-toggle {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#theme-toggle:hover {
+  transform: scale(1.1) rotate(12deg);
+  box-shadow: var(--shadow-lg);
+}
+
+.prob-card, .part, .contrib-row {
+  background: var(--card-bg);
+}
+
+body.dark .code-block {
+  background: #0f172a;
+}
 </style>
 </head>
 <body>
+<button id="theme-toggle" aria-label="Toggle theme">
+  <svg class="sun" style="display:none;" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="5"/><path d="M10 1v2M10 17v2M1 10h2M17 10h2M3.64 3.64l1.41 1.41M14.95 14.95l1.41 1.41M3.64 16.36l1.41-1.41M14.95 5.05l1.41-1.41"/></svg>
+  <svg class="moon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
 <div class="container">
 
 <!-- HERO -->
@@ -933,6 +1000,36 @@ document.addEventListener('DOMContentLoaded', () => {
     section.style.transform = 'translateY(20px)';
     section.style.transition = 'all 0.6s ease-out';
     observer.observe(section);
+  });
+
+  // Theme Toggle Logic
+  const toggle = document.getElementById('theme-toggle');
+  const sun = toggle.querySelector('.sun');
+  const moon = toggle.querySelector('.moon');
+  
+  const updateIcons = (isDark) => {
+    sun.style.display = isDark ? 'block' : 'none';
+    moon.style.display = isDark ? 'none' : 'block';
+  };
+
+  const isDarkMode = () => document.body.classList.contains('dark') || 
+    (!document.body.classList.contains('light') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+  updateIcons(isDarkMode());
+
+  toggle.addEventListener('click', () => {
+    if (document.body.classList.contains('dark')) {
+      document.body.classList.remove('dark');
+      document.body.classList.add('light');
+    } else if (document.body.classList.contains('light')) {
+      document.body.classList.remove('light');
+      document.body.classList.add('dark');
+    } else {
+      // Respect fallback to systempref
+      const systemIsDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.body.classList.add(systemIsDark ? 'light' : 'dark');
+    }
+    updateIcons(isDarkMode());
   });
 });
 </script>
