@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --primary: #4f46e5;
+  --primary-light: #eef2ff;
+  --secondary: #10b981;
+  --secondary-light: #ecfdf5;
+  --accent: #f59e0b;
+  --accent-light: #fffbeb;
+  --bg: #f8fafc;
+  --card-bg: rgba(255, 255, 255, 0.8);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #94a3b8;
+  --border: #e2e8f0;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --radius-sm: 0.375rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--text-primary);
+  background: var(--bg);
+  background-image: 
+    radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+    radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+    radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+  background-attachment: fixed;
+  background-size: cover;
+  line-height: 1.6;
+  padding: 2rem 1rem;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 3rem;
+  box-shadow: var(--shadow-lg);
+  animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.hero {
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 2.5rem;
+  margin-bottom: 3rem;
+}
+
+.hero-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin-bottom: 1rem;
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: var(--primary-light);
+  border-radius: 2rem;
+}
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+}
+
+.hero-sub {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.hero-sub span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 8px var(--primary);
+}
+
+.section { margin-bottom: 4rem; }
+
+.section-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.section-label::after {
+  content: "";
+  height: 1px;
+  background: var(--border);
+  flex: 1;
+}
+
+.summary-text {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  max-width: 100%;
+}
+
+.summary-text strong {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* Problems Grid */
+.problems-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.prob-card {
+  background: white;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.prob-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary);
+}
+
+.prob-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; width: 4px; height: 100%;
+  background: var(--primary);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.prob-card:hover::before { opacity: 1; }
+
+.prob-num {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--primary-light);
+  position: absolute;
+  right: 1rem; top: 0.5rem;
+  z-index: 0;
+  transition: color 0.3s;
+}
+
+.prob-card:hover .prob-num { color: var(--primary); opacity: 0.1; }
+
+.prob-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+  position: relative;
+  z-index: 1;
+}
+
+.prob-desc {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;
+}
+
+/* Parts/Accordion */
+.parts { display: flex; flex-direction: column; gap: 1.25rem; }
+
+.part {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+.part:hover { border-color: var(--primary); }
+
+.part-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.25rem 1.5rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.part-num {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.pn-teal   { background: var(--secondary-light); color: var(--secondary); }
+.pn-purple { background: #EEEDFE; color: #4f46e5; }
+.pn-amber  { background: var(--accent-light); color: var(--accent); }
+.pn-coral  { background: #FAECE7; color: #ef4444; }
+.pn-blue   { background: #E6F1FB; color: #3b82f6; }
+
+.part-meta { flex: 1; }
+
+.part-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.part-tagline {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+.part-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+}
+
+.badge-high   { background: var(--secondary-light); color: var(--secondary); }
+.badge-medium { background: var(--accent-light); color: var(--accent); }
+
+.part-chevron {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  transition: transform 0.3s;
+}
+
+.part-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+}
+
+.part-body.open { 
+  max-height: 2000px;
+  opacity: 1;
+  padding: 0 1.5rem 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.part-chevron.open { transform: rotate(180deg); color: var(--primary); }
+
+.explain-block {
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  border-left: 4px solid;
+}
+
+.explain-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.explain-text {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.code-block {
+  background: #1e293b;
+  border-radius: var(--radius-sm);
+  padding: 1.25rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8125rem;
+  color: #e2e8f0;
+  overflow-x: auto;
+  line-height: 1.6;
+  margin: 1.5rem 0;
+  box-shadow: inset 0 2px 4px 0 rgba(0,0,0,0.06);
+}
+
+.code-comment { color: #94a3b8; font-style: italic; }
+.code-keyword { color: #93c5fd; font-weight: 500; }
+.code-string { color: #86efac; }
+.code-fn { color: #fde047; }
+
+.outcome-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.pill {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.375rem 0.875rem;
+  border-radius: 2rem;
+  background: var(--primary-light);
+  color: var(--primary);
+  border: 1px solid var(--border);
+}
+
+/* Timeline */
+.timeline { position: relative; padding-left: 2rem; }
+
+.tl-line {
+  position: absolute;
+  left: 0.4375rem; top: 0; bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+
+.tl-item {
+  position: relative;
+  margin-bottom: 2.5rem;
+}
+
+.tl-dot {
+  position: absolute;
+  left: -2rem; top: 0.25rem;
+  width: 1rem; height: 1rem;
+  border-radius: 50%;
+  border: 2px solid white;
+  background: var(--border);
+  z-index: 1;
+  transition: all 0.3s;
+}
+
+.tl-item:hover .tl-dot { transform: scale(1.2); background: var(--primary); }
+
+.tl-dot.active {
+  background: var(--primary);
+  box-shadow: 0 0 0 4px var(--primary-light);
+}
+
+.tl-phase {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin-bottom: 0.25rem;
+}
+
+.tl-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.tl-desc {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+}
+
+.tl-hours {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+/* Contributions */
+.contrib-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  margin-bottom: 1rem;
+  transition: all 0.3s;
+}
+
+.contrib-row:hover { transform: translateX(8px); border-color: var(--primary); }
+
+.contrib-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  white-space: nowrap;
+}
+
+.cb-merged { background: var(--secondary-light); color: var(--secondary); }
+.cb-poc    { background: var(--primary-light); color: var(--primary); }
+
+.contrib-pr {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.contrib-desc {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+/* Quote */
+.quote-block {
+  border-left: 3px solid var(--primary);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  background: var(--primary-light);
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--text-secondary);
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.quote-src {
+  font-size: 0.8125rem;
+  font-style: normal;
+  color: var(--text-tertiary);
+  margin-top: 0.5rem;
+  font-weight: 600;
+}
+
+/* Hours bar visually enhanced */
+.hours-bar {
+  display: flex;
+  height: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+}
+
+@media (max-width: 768px) {
+  .container { padding: 1.5rem; }
+  .hero-title { font-size: 2.25rem; }
+  .hero-sub { gap: 0.75rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">Google Summer of Code 2026</div>
+  <div class="hero-title">Multilingual Support Improvements for Wagtail</div>
+  <div class="hero-sub">
+    <span><span class="dot"></span> Mohd Adeeb</span>
+    <span><span class="dot"></span> New Delhi, India · UTC+5:30</span>
+    <span><span class="dot"></span> 350 hours · Large project</span>
+    <span><span class="dot"></span> Mentors: Thibaud Colas, Coen van der Kamp</span>
+  </div>
+</div>
+
+<!-- WHAT THIS IS ABOUT -->
+<div class="section">
+  <div class="section-label">In plain words</div>
+  <p class="summary-text">
+    Wagtail is a popular Django CMS used by many teams to run websites in <strong>multiple languages</strong>.
+    The core framework is well-designed — but over years of real use, developers have repeatedly hit
+    the same missing pieces. This proposal <strong>fills five specific gaps</strong> that cause real pain
+    in production today: broken SEO, missing APIs, and configuration headaches.
+    Every change is additive — nothing existing breaks.
+  </p>
+</div>
+
+<!-- THE 5 PROBLEMS -->
+<div class="section">
+  <div class="section-label">The five problems being solved</div>
+  <div class="problems-grid">
+    <div class="prob-card" onclick="document.getElementById('p1').scrollIntoView({behavior:'smooth'})">
+      <div class="prob-num">01</div>
+      <div class="prob-title">Sitemaps don't list translated pages</div>
+      <div class="prob-desc">Google can't find your French or Arabic versions — and penalises you for duplicate content.</div>
+    </div>
+    <div class="prob-card" onclick="document.getElementById('p2').scrollIntoView({behavior:'smooth'})">
+      <div class="prob-num">02</div>
+      <div class="prob-title">Silent wrong-language fallback</div>
+      <div class="prob-desc"><code>.localized</code> returns the source object when no translation exists — with zero warning.</div>
+    </div>
+    <div class="prob-card" onclick="document.getElementById('p3').scrollIntoView({behavior:'smooth'})">
+      <div class="prob-num">03</div>
+      <div class="prob-title">Settings can't be localised</div>
+      <div class="prob-desc">You can't store different contact emails or footer text per language without hacky workarounds.</div>
+    </div>
+    <div class="prob-card" onclick="document.getElementById('p4').scrollIntoView({behavior:'smooth'})">
+      <div class="prob-num">04</div>
+      <div class="prob-title">No way to tell source from translation</div>
+      <div class="prob-desc"><code>has_translation</code> returns <code>True</code> even on translated items — the name is misleading.</div>
+    </div>
+    <div class="prob-card" onclick="document.getElementById('p5').scrollIntoView({behavior:'smooth'})">
+      <div class="prob-num">05</div>
+      <div class="prob-title">Search ignores active language</div>
+      <div class="prob-desc">French search can't use French NLP rules — all locales share the same search config.</div>
+    </div>
+  </div>
+</div>
+
+<!-- THE FIVE PARTS -->
+<div class="section">
+  <div class="section-label">Technical implementation</div>
+  <div class="parts">
+
+    <!-- PART 1 -->
+    <div class="part" id="p1">
+      <div class="part-header" onclick="toggle(this)">
+        <div class="part-num pn-teal">1</div>
+        <div class="part-meta">
+          <div class="part-name">Multilingual sitemaps</div>
+          <div class="part-tagline">hreflang alternates + x-default support</div>
+        </div>
+        <div class="part-badge badge-high">High confidence</div>
+        <div class="part-chevron">▼</div>
+      </div>
+      <div class="part-body open">
+        <div class="explain-block" style="border-color:#1D9E75;">
+          <div class="explain-label" style="color:#0F6E56;">What & why in plain English</div>
+          <div class="explain-text">
+            A <strong>sitemap</strong> is a file that tells Google which pages your site has.
+            Right now, Wagtail's sitemap only lists the <em>default-language</em> pages.
+            If you have a French translation of a page, Google never learns it exists — so it treats
+            the French URL as duplicate content and penalises your rankings.
+            <br><br>
+            The fix: when i18n is on, attach <strong>hreflang</strong> links to every page — these are small XML
+            tags that say "the French version of this page is at /fr/…". Also add an <strong>x-default</strong>
+            entry that tells search engines which version to show by default.
+          </div>
+        </div>
+        <div class="quote-block">
+          "The sitemap only produces a list for pages in the default locale. It lacks hreflang entries and the x-default value."
+          <div class="quote-src">— enzedonline, Wagtail #13693</div>
+        </div>
+        <div class="code-block"><span class="code-comment"># wagtail/models/pages.py</span>
+<span class="code-keyword">def</span> <span class="code-fn">get_sitemap_urls</span>(self, request=None):
+    urls = super().get_sitemap_urls(request)
+
+    <span class="code-keyword">if</span> getattr(settings, <span class="code-string">'WAGTAIL_I18N_ENABLED'</span>, False):
+        alternates = []
+        <span class="code-comment"># Fetch all live translations of this page</span>
+        qs = (self.get_translations(inclusive=True)
+                  .live()
+                  .defer_streamfields()   <span class="code-comment"># skip heavy stream data</span>
+                  .select_related(<span class="code-string">'locale'</span>))
+
+        <span class="code-keyword">for</span> page <span class="code-keyword">in</span> qs:
+            alternates.append({
+                <span class="code-string">'lang_code'</span>: page.locale.language_code,
+                <span class="code-string">'location'</span>: page.full_url,
+            })
+
+        <span class="code-comment"># x-default = point search engines to the default-locale version</span>
+        default = self.get_translation_or_none(Locale.get_default())
+        alternates.append({<span class="code-string">'lang_code'</span>: <span class="code-string">'x-default'</span>,
+                            <span class="code-string">'location'</span>: (default <span class="code-keyword">or</span> self).full_url})
+
+        urls[0][<span class="code-string">'alternates'</span>] = alternates
+    <span class="code-keyword">return</span> urls</div>
+        <div class="outcome-pills">
+          <span class="pill">All translated pages indexed by Google</span>
+          <span class="pill">No more duplicate-content penalties</span>
+          <span class="pill">x-default for default locale</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PART 2 -->
+    <div class="part" id="p2">
+      <div class="part-header" onclick="toggle(this)">
+        <div class="part-num pn-purple">2</div>
+        <div class="part-meta">
+          <div class="part-name">localized_or_none</div>
+          <div class="part-tagline">Explicit API — no silent wrong-language fallback</div>
+        </div>
+        <div class="part-badge badge-high">High confidence</div>
+        <div class="part-chevron">▼</div>
+      </div>
+      <div class="part-body">
+        <div class="explain-block" style="border-color:#7F77DD;">
+          <div class="explain-label" style="color:#534AB7;">What & why in plain English</div>
+          <div class="explain-text">
+            When you call <code>.localized</code> on a Wagtail object and no translation exists for the
+            active language, it <strong>silently gives you the source object back</strong> — in the wrong language —
+            with no warning at all. Your French site renders English content invisibly.
+            <br><br>
+            The fix is a new property: <code>.localized_or_none</code>. It does the same lookup but returns
+            <code>None</code> when nothing is found, so your code can handle the missing translation explicitly —
+            show a fallback UI, log a warning, skip the block. The old <code>.localized</code> is untouched.
+          </div>
+        </div>
+        <div class="code-block"><span class="code-comment"># wagtail/models/i18n.py  — two new properties on TranslatableMixin</span>
+
+<span class="code-keyword">@property</span>
+<span class="code-keyword">def</span> <span class="code-fn">localized_or_none</span>(self):
+    <span class="code-comment">"""Like .localized but returns None when no translation exists.
+    Never silently shows the wrong language."""</span>
+    <span class="code-keyword">if not</span> getattr(settings, <span class="code-string">'WAGTAIL_I18N_ENABLED'</span>, False):
+        <span class="code-keyword">return</span> self
+    locale = Locale.get_active()
+    <span class="code-keyword">if</span> locale.id == self.locale_id:
+        <span class="code-keyword">return</span> self
+    result = self.get_translation_or_none(locale)
+    <span class="code-comment"># For pages: also check it's published, not just a draft</span>
+    <span class="code-keyword">if</span> result <span class="code-keyword">and</span> isinstance(self, DraftStateMixin) <span class="code-keyword">and not</span> result.live:
+        <span class="code-keyword">return</span> None
+    <span class="code-keyword">return</span> result
+
+<span class="code-keyword">@property</span>
+<span class="code-keyword">def</span> <span class="code-fn">localized_draft_or_none</span>(self):
+    <span class="code-comment">"""Same but includes unpublished drafts — useful in the admin."""</span>
+    ...</div>
+        <div class="outcome-pills">
+          <span class="pill">Explicit control over missing translations</span>
+          <span class="pill">No migration needed</span>
+          <span class="pill">Old .localized unchanged</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PART 3 -->
+    <div class="part" id="p3">
+      <div class="part-header" onclick="toggle(this)">
+        <div class="part-num pn-amber">3</div>
+        <div class="part-meta">
+          <div class="part-name">Translatable settings</div>
+          <div class="part-tagline">Per-locale configuration for BaseSiteSetting & BaseGenericSetting</div>
+        </div>
+        <div class="part-badge badge-medium">Medium confidence</div>
+        <div class="part-chevron">▼</div>
+      </div>
+      <div class="part-body">
+        <div class="explain-block" style="border-color:#EF9F27;">
+          <div class="explain-label" style="color:#854F0B;">What & why in plain English</div>
+          <div class="explain-text">
+            Wagtail's <strong>Settings</strong> models let site editors store global config — things like a contact email,
+            footer text, social media links, or a phone number. But right now these settings have no
+            concept of language. Every locale sees the same values.
+            <br><br>
+            The fix: apply <code>BootstrapTranslatableMixin</code> to the settings models (only when i18n is
+            enabled), add locale-aware lookup with a fallback to the default locale, and add a
+            locale switcher in the settings UI — exactly like the one already on the page editor.
+            A monolingual install sees <strong>zero schema changes</strong>.
+          </div>
+        </div>
+        <div class="outcome-pills">
+          <span class="pill">Different contact info per language</span>
+          <span class="pill">Per-locale footer text, links</span>
+          <span class="pill">Locale switcher in admin UI</span>
+          <span class="pill">Fallback to default locale</span>
+          <span class="pill">Zero impact on monolingual installs</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PART 4 -->
+    <div class="part" id="p4">
+      <div class="part-header" onclick="toggle(this)">
+        <div class="part-num pn-coral">4</div>
+        <div class="part-meta">
+          <div class="part-name">Source identity heuristics</div>
+          <div class="part-tagline">Tell apart source objects from their translations</div>
+        </div>
+        <div class="part-badge badge-medium">Medium confidence</div>
+        <div class="part-chevron">▼</div>
+      </div>
+      <div class="part-body">
+        <div class="explain-block" style="border-color:#D85A30;">
+          <div class="explain-label" style="color:#993C1D;">What & why in plain English</div>
+          <div class="explain-text">
+            Wagtail currently has a method called <code>has_translation</code>, but it returns <code>True</code> even on
+            <em>translated</em> items — because it checks if <em>any</em> translation exists, not whether
+            <em>this</em> item is the original. Confusing and misleading.
+            <br><br>
+            The fix adds two helpers. <code>is_source_translation</code> is a <strong>heuristic</strong> (not a guarantee):
+            it returns <code>True</code> if this object's locale is the site default.
+            <code>get_translation_siblings()</code> returns all objects sharing the same translation key —
+            useful for writing safe <code>pre_delete</code> signal handlers that clean up related translations.
+            Both include clear docstrings warning about the Belgian-French edge case.
+          </div>
+        </div>
+        <div class="code-block"><span class="code-keyword">@property</span>
+<span class="code-keyword">def</span> <span class="code-fn">is_source_translation</span>(self):
+    <span class="code-comment">"""
+    Heuristic only — True if this object's locale is the site default.
+    Edge case: French → Belgian French is valid (RFC 54 does not track
+    source/translation in core). For accurate tracking use wagtail-localize.
+    """</span>
+    <span class="code-keyword">return</span> self.locale_id == Locale.get_default().pk
+
+<span class="code-keyword">def</span> <span class="code-fn">get_translation_siblings</span>(self):
+    <span class="code-comment">"""All objects sharing this translation_key across locales.
+    Use in pre_delete signal handlers to decide what to do with
+    orphaned translations when a source is deleted."""</span>
+    <span class="code-keyword">return</span> self.__class__.objects.filter(
+        translation_key=self.translation_key
+    ).select_related(<span class="code-string">'locale'</span>)</div>
+        <div class="outcome-pills">
+          <span class="pill">Safe delete-signal handlers</span>
+          <span class="pill">Clear docstrings for edge cases</span>
+          <span class="pill">No RFC 54 design changes</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PART 5 -->
+    <div class="part" id="p5">
+      <div class="part-header" onclick="toggle(this)">
+        <div class="part-num pn-blue">5</div>
+        <div class="part-meta">
+          <div class="part-name">Locale-aware search config</div>
+          <div class="part-tagline">Per-language NLP dictionaries for Wagtail search</div>
+        </div>
+        <div class="part-badge badge-medium">Deferral candidate</div>
+        <div class="part-chevron">▼</div>
+      </div>
+      <div class="part-body">
+        <div class="explain-block" style="border-color:#378ADD;">
+          <div class="explain-label" style="color:#185FA5;">What & why in plain English</div>
+          <div class="explain-text">
+            Wagtail uses <strong>PostgreSQL's full-text search</strong>, which supports language-specific
+            stop-words and stemming — e.g., French "rechercher" and "recherche" match the same root.
+            But right now there's no way to say "use French config when the active locale is French",
+            because all locales share one <code>SEARCH_CONFIG</code>.
+            <br><br>
+            The fix introduces an optional <code>LOCALES</code> sub-key in the search backend config.
+            Existing configs without <code>LOCALES</code> are completely unchanged. A new
+            helper <code>get_search_backend_for_locale()</code> merges overrides onto the base config at
+            query time. If this part overruns, it's safely deferred — Parts 1–4 still form a
+            complete, independently mergeable contribution.
+          </div>
+        </div>
+        <div class="code-block"><span class="code-comment"># settings.py — fully backward compatible, LOCALES key is optional</span>
+WAGTAILSEARCH_BACKENDS = {
+    <span class="code-string">'default'</span>: {
+        <span class="code-string">'BACKEND'</span>: <span class="code-string">'wagtail.search.backends.database'</span>,
+        <span class="code-string">'SEARCH_CONFIG'</span>: <span class="code-string">'english'</span>,  <span class="code-comment"># fallback for unmatched locales</span>
+        <span class="code-string">'LOCALES'</span>: {
+            <span class="code-string">'fr'</span>: {<span class="code-string">'SEARCH_CONFIG'</span>: <span class="code-string">'french'</span>},
+            <span class="code-string">'de'</span>: {<span class="code-string">'SEARCH_CONFIG'</span>: <span class="code-string">'german'</span>},
+        }
+    }
+}
+<span class="code-comment"># New helper — merges locale overrides onto the base config</span>
+backend = get_search_backend_for_locale(<span class="code-string">'fr'</span>)  <span class="code-comment"># gets french config</span>
+backend = get_search_backend_for_locale(<span class="code-string">'ja'</span>)  <span class="code-comment"># falls back to english</span></div>
+        <div class="outcome-pills">
+          <span class="pill">Locale-specific NLP dictionaries</span>
+          <span class="pill">Old get_search_backend() unchanged</span>
+          <span class="pill">Named deferral candidate</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TIMELINE -->
+<div class="section">
+  <div class="section-label">Timeline — 350 hours</div>
+
+  <div style="margin-bottom:1.5rem;">
+    <div class="hours-bar">
+      <div class="hb-seg" style="width:8.6%; background:var(--secondary);" title="Community Bonding: 30h"></div>
+      <div class="hb-seg" style="width:25.7%; background:var(--primary);" title="Phase 1: 90h"></div>
+      <div class="hb-seg" style="width:25.7%; background:var(--accent);" title="Phase 2: 90h"></div>
+      <div class="hb-seg" style="width:25.7%; background:#ef4444;" title="Phase 3: 90h"></div>
+      <div class="hb-seg" style="width:14.3%; background:var(--text-tertiary);" title="Phase 4: 50h"></div>
+    </div>
+    <div class="hb-legend">
+      <span><span class="hb-swatch" style="background:var(--secondary);"></span>Community bonding (30h)</span>
+      <span><span class="hb-swatch" style="background:var(--primary);"></span>Phase 1 — Sitemaps + API (90h)</span>
+      <span><span class="hb-swatch" style="background:var(--accent);"></span>Phase 2 — Settings (90h)</span>
+      <span><span class="hb-swatch" style="background:#ef4444;"></span>Phase 3 — Identity + Search (90h)</span>
+      <span><span class="hb-swatch" style="background:var(--text-tertiary);"></span>Phase 4 — QA + Docs (50h)</span>
+    </div>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-line"></div>
+    <div class="tl-item">
+      <div class="tl-dot active"></div>
+      <div class="tl-phase">Community bonding · May</div>
+      <div class="tl-title">Research & coordination</div>
+      <div class="tl-desc">Review closed PRs #6873, #9390, #12973 to understand what blocked them. Post API design sketches to #13693 for mentor feedback. Open coordination issues on wagtail-localize for Parts 3 and 4.</div>
+      <div class="tl-hours">30h</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">Weeks 1–3</div>
+      <div class="tl-title">Part 1 + Part 2 — Sitemaps & localized_or_none</div>
+      <div class="tl-desc">Multilingual sitemaps with alternates, x-default, and Sitemap.items() locale filter. Plus both <code>localized_or_none</code> and <code>localized_draft_or_none</code> properties. Full test coverage and docs for both.</div>
+      <div class="tl-hours">90h</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">Weeks 4–6</div>
+      <div class="tl-title">Part 3 — Translatable settings</div>
+      <div class="tl-desc">Apply BootstrapTranslatableMixin to both settings models. Locale-aware lookup with fallback. Locale switcher in the UI. Verify zero migration impact on monolingual installs.</div>
+      <div class="tl-hours">90h</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">Weeks 7–9</div>
+      <div class="tl-title">Part 4 + Part 5 — Source identity & search config</div>
+      <div class="tl-desc">Add <code>is_source_translation</code> and <code>get_translation_siblings()</code> to TranslatableMixin. Locale-aware search helper with LOCALES sub-key and PostgreSQL backward-compat tests.</div>
+      <div class="tl-hours">90h</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">Weeks 10–12</div>
+      <div class="tl-title">QA, docs & buffer</div>
+      <div class="tl-desc">End-to-end testing on a bakerydemo fork with English, French, and Arabic. Locale-aware search tutorial. Final typing, docstrings, PR submissions, and project report. Buffer for any Phase 3 overrun.</div>
+      <div class="tl-hours">50h</div>
+    </div>
+  </div>
+</div>
+
+<!-- EXISTING CONTRIBUTIONS -->
+<div class="section">
+  <div class="section-label">Existing contributions to Wagtail</div>
+  <div class="contrib-row">
+    <div class="contrib-badge cb-poc">Proof of concept</div>
+    <div class="contrib-meta">
+      <div class="contrib-pr">Sitemaps PoC branch — gsoc-sitemaps-poc</div>
+      <div class="contrib-desc">A working implementation of Part 1 with all local tests passing. Modified <code>Page.get_sitemap_urls()</code> to generate hreflang alternates and x-default. Updated the sitemap test suite to account for extra translation queries. All 6,400+ Wagtail sitemap tests pass locally.</div>
+    </div>
+  </div>
+  <div class="contrib-row">
+    <div class="contrib-badge cb-merged">Merged</div>
+    <div class="contrib-meta">
+      <div class="contrib-pr">PR #14005 — Bulk actions return specific page types</div>
+      <div class="contrib-desc">Fixed bulk actions returning base <code>Page</code> instances instead of specific types, which caused permission logic to be bypassed. Required understanding queryset behaviour and using <code>.specific(defer=True)</code> to balance correctness and performance.</div>
+    </div>
+  </div>
+  <div class="contrib-row">
+    <div class="contrib-badge cb-merged">Merged</div>
+    <div class="contrib-meta">
+      <div class="contrib-pr">PR #13911 — Snippet chooser widgets with non-PK relations</div>
+      <div class="contrib-desc">Fixed snippet chooser widgets failing for <code>to_field</code> relations. Involved reworking field lookup resolution and iterating based on reviewer feedback — gave direct experience with Wagtail's review process and backward-compat expectations.</div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<script>
+function toggle(header) {
+  const body = header.nextElementSibling;
+  const chevron = header.querySelector('.part-chevron');
+  const isOpen = body.classList.contains('open');
+  
+  // Optional: Close others if you want a true accordion
+  // document.querySelectorAll('.part-body').forEach(b => b.classList.remove('open'));
+  // document.querySelectorAll('.part-chevron').forEach(c => c.classList.remove('open'));
+  
+  if (!isOpen) {
+    body.classList.add('open');
+    chevron.classList.add('open');
+  } else {
+    body.classList.remove('open');
+    chevron.classList.remove('open');
+  }
+}
+
+// Add scroll reveal animations
+document.addEventListener('DOMContentLoaded', () => {
+  const sections = document.querySelectorAll('.section, .contrib-row, .tl-item');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  sections.forEach(section => {
+    section.style.opacity = '0';
+    section.style.transform = 'translateY(20px)';
+    section.style.transition = 'all 0.6s ease-out';
+    observer.observe(section);
+  });
+});
+</script>
+</body>
+</html>
